@@ -8,12 +8,12 @@ Based on FarmersCreate by ChefExperte, version 2.0 (tag v2.0, commit fa9ef8bf).
   Upstream project: https://modrinth.com/mod/farmerscreate
   This port:        https://github.com/chaevsfe/FarmersCreate
 
-Modified by chaevsfe in 2026 to run on Minecraft 26.2 with the Fabric mod
+Modified by chaevsfe in 2026 to run on Minecraft 26.1.2 with the Fabric mod
 loader, built against Create Fly by ZurrTum and Farmer's Delight Refabricated.
 
 Nature of the modifications:
-  - built against Create Fly 26.2 and Farmer's Delight Refabricated 26.2
-  - Farmer's Delight recipe results read through the 26.2 item stack templates
+  - built against Create Fly 26.1.2 and Farmer's Delight Refabricated 26.1
+  - Farmer's Delight recipe results read through the 26.x item stack templates
   - the recipe manager mixin applied once, from a single common mixin config
   - recipe counts logged at debug level instead of printed to standard output
   - the empty client, data generator and recipe provider classes removed

@@ -20,10 +20,10 @@ The generated recipes are named `farmerscreate:cutting/<namespace>/<path>` and `
 
 | Component | Version |
 | --- | --- |
-| Minecraft | `26.2` |
+| Minecraft | `26.1`, `26.1.1` or `26.1.2` |
 | Mod loader | Fabric Loader `0.19.3` or newer |
-| Create Fly | `6.0.9-1` or newer |
-| Farmer's Delight Refabricated | `26.2-3.6.26` or newer |
+| Create Fly | `6.0.9-4` or newer |
+| Farmer's Delight Refabricated | `26.1-3.6.26` or newer |
 | Fabric API | required |
 | Java | `25` or newer |
 | Environments | Client and server |
