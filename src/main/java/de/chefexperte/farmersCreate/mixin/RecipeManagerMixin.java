@@ -6,7 +6,6 @@ import com.zurrtum.create.content.processing.recipe.HeatCondition;
 import com.zurrtum.create.content.processing.recipe.ProcessingOutput;
 import com.zurrtum.create.content.processing.recipe.SizedIngredient;
 import de.chefexperte.farmersCreate.FarmersCreate;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -37,7 +36,7 @@ public class RecipeManagerMixin {
         var allRecipes = new ArrayList<>(recipeMap.values());
         // Get Farmer's Delight Cutting Board Recipes
         Collection<RecipeHolder<CuttingBoardRecipe>> cuttingBoardRecipes = recipeMap.byType(ModRecipeTypes.CUTTING.get()).stream().toList();
-        System.out.println("Found " + cuttingBoardRecipes.size() + " Farmer's Delight Cutting Board Recipes");
+        FarmersCreate.LOGGER.debug("Found {} Farmer's Delight cutting board recipes", cuttingBoardRecipes.size());
         for (var cuttingBoardRecipeHolder : cuttingBoardRecipes) {
             var cuttingBoardRecipe = cuttingBoardRecipeHolder.value();
             var processingOutputs = cuttingBoardRecipe.getRollableResults().stream().map(
@@ -52,10 +51,7 @@ public class RecipeManagerMixin {
         }
         // Get Farmer's Delight Cooking Recipes
         Collection<RecipeHolder<CookingPotRecipe>> cookingRecipes = recipeMap.byType(ModRecipeTypes.COOKING.get()).stream().toList();
-        System.out.println("Found " + cookingRecipes.size() + " Farmer's Delight Cooking Recipes");
-        for (var tag : BuiltInRegistries.ITEM.getTags().toList()) {
-            System.out.println("Found tag: " + tag);
-        }
+        FarmersCreate.LOGGER.debug("Found {} Farmer's Delight cooking pot recipes", cookingRecipes.size());
         for (var cookingRecipeHolder : cookingRecipes) {
             var cookingRecipe = cookingRecipeHolder.value();
             var ingredients = SizedIngredient.of(cookingRecipe.input());

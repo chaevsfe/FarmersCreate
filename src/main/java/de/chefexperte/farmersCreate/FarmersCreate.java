@@ -1,16 +1,13 @@
 package de.chefexperte.farmersCreate;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FarmersCreate implements ModInitializer {
 
     public static final String MOD_ID = "farmerscreate";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     @Override
     public void onInitialize() {
