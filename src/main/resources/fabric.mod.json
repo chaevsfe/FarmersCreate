@@ -3,7 +3,7 @@
   "id": "farmerscreate",
   "version": "${version}",
   "name": "Create Fly: Farmers Create",
-  "description": "FarmersCreate port for Create Fly 26.2. Every Farmer's Delight cutting board recipe also runs on a deployer, and every cooking pot recipe in a heated mixer.",
+  "description": "FarmersCreate port for Create Fly 26.1.2. Every Farmer's Delight cutting board recipe also runs on a deployer, and every cooking pot recipe in a heated mixer.",
   "authors": [
     "ChefExperte",
     "chaevsfe"
