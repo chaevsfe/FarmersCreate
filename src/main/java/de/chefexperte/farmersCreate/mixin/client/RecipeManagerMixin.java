@@ -41,7 +41,7 @@ public class RecipeManagerMixin {
         for (var cuttingBoardRecipeHolder : cuttingBoardRecipes) {
             var cuttingBoardRecipe = cuttingBoardRecipeHolder.value();
             var processingOutputs = cuttingBoardRecipe.getRollableResults().stream().map(
-                    result -> new ProcessingOutput(result.stack().getItem(), result.stack().getCount(), result.chance())).toList();
+                    result -> new ProcessingOutput(result.stack().item(), result.stack().count(), result.stack().components(), result.chance())).toList();
             var cuttingRecipe = new DeployerApplicationRecipe(processingOutputs, true, cuttingBoardRecipe.getInput(), cuttingBoardRecipe.getTool());
             var namespace = cuttingBoardRecipeHolder.id().identifier().getNamespace();
             var path = cuttingBoardRecipeHolder.id().identifier().getPath();
@@ -60,7 +60,8 @@ public class RecipeManagerMixin {
             var cookingRecipe = cookingRecipeHolder.value();
             var ingredients = SizedIngredient.of(cookingRecipe.input());
             var time = cookingRecipe.getCookTime();
-            var output = List.of(new ProcessingOutput(cookingRecipe.result()));
+            var result = cookingRecipe.result();
+            var output = List.of(new ProcessingOutput(result.item(), result.count(), result.components(), 1));
             var mixingRecipe = new MixingRecipe(time, output, List.of(), HeatCondition.HEATED, new ArrayList<>(), ingredients);
             var namespace = cookingRecipeHolder.id().identifier().getNamespace();
             var path = cookingRecipeHolder.id().identifier().getPath();
