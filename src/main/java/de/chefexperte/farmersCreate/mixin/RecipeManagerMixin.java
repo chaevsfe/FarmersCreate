@@ -6,17 +6,26 @@ import com.zurrtum.create.content.processing.recipe.HeatCondition;
 import com.zurrtum.create.content.processing.recipe.ProcessingOutput;
 import com.zurrtum.create.content.processing.recipe.SizedIngredient;
 import de.chefexperte.farmersCreate.FarmersCreate;
+import de.chefexperte.farmersCreate.FarmersCreateConfig;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import vectorwing.farmersdelight.common.block.entity.CookingPotBlockEntity;
 import vectorwing.farmersdelight.common.crafting.CookingPotRecipe;
 import vectorwing.farmersdelight.common.crafting.CuttingBoardRecipe;
 import vectorwing.farmersdelight.common.registry.ModRecipeTypes;
@@ -24,6 +33,7 @@ import vectorwing.farmersdelight.common.registry.ModRecipeTypes;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Mixin(RecipeManager.class)
 public class RecipeManagerMixin {
@@ -33,6 +43,7 @@ public class RecipeManagerMixin {
 
     @Inject(at = @At("RETURN"), method = "apply(Lnet/minecraft/world/item/crafting/RecipeMap;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V")
     private void farmerscreate$addCreateRecipes(RecipeMap recipeMap, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
+        var config = FarmersCreateConfig.get();
         var allRecipes = new ArrayList<>(recipeMap.values());
         // Get Farmer's Delight Cutting Board Recipes
         Collection<RecipeHolder<CuttingBoardRecipe>> cuttingBoardRecipes = recipeMap.byType(ModRecipeTypes.CUTTING.get()).stream().toList();
@@ -54,9 +65,13 @@ public class RecipeManagerMixin {
         FarmersCreate.LOGGER.debug("Found {} Farmer's Delight cooking pot recipes", cookingRecipes.size());
         for (var cookingRecipeHolder : cookingRecipes) {
             var cookingRecipe = cookingRecipeHolder.value();
-            var ingredients = SizedIngredient.of(cookingRecipe.input());
+            var ingredients = new ArrayList<>(SizedIngredient.of(cookingRecipe.input()));
             var time = cookingRecipe.getCookTime();
             var result = cookingRecipe.result();
+            if (config.requireContainer) {
+                farmerscreate$servingContainer(cookingRecipe).ifPresent(
+                        container -> ingredients.add(new SizedIngredient(Ingredient.of(HolderSet.direct(container)), result.count())));
+            }
             var output = List.of(new ProcessingOutput(result.item(), result.count(), result.components(), 1));
             var mixingRecipe = new MixingRecipe(time, output, List.of(), HeatCondition.HEATED, new ArrayList<>(), ingredients);
             var namespace = cookingRecipeHolder.id().identifier().getNamespace();
@@ -67,5 +82,30 @@ public class RecipeManagerMixin {
             allRecipes.add(recipeHolder);
         }
         this.recipes = RecipeMap.create(allRecipes);
+    }
+
+    @Unique
+    private static Optional<Holder<Item>> farmerscreate$servingContainer(CookingPotRecipe recipe) {
+        Optional<ItemStackTemplate> override = recipe.containerOverride();
+        Holder<Item> container;
+        if (override.isPresent()) {
+            container = override.get().item();
+        } else {
+            Item meal = recipe.result().item().value();
+            ItemStackTemplate remainder = meal.getCraftingRemainder();
+            if (remainder != null) {
+                container = remainder.item();
+            } else {
+                Item fallback = CookingPotBlockEntity.INGREDIENT_REMAINDER_OVERRIDES.get(meal);
+                if (fallback == null) {
+                    return Optional.empty();
+                }
+                container = BuiltInRegistries.ITEM.wrapAsHolder(fallback);
+            }
+        }
+        if (container.value() == Items.AIR) {
+            return Optional.empty();
+        }
+        return Optional.of(container);
     }
 }
