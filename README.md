@@ -11,10 +11,22 @@ Runs every Farmer's Delight cutting board recipe on a Create deployer and every 
 
 When recipes load, the mod reads every cutting board and cooking pot recipe on the server, including those added by Farmer's Delight add-ons and data packs, and adds a matching Create recipe for each:
 
-- **Cutting board** recipes become deploying recipes. The deployer holds the tool the cutting board recipe asks for (a knife, an axe, a pickaxe and so on), keeps it undamaged, and every output keeps its chance.
-- **Cooking pot** recipes become heated mixing recipes with the same ingredients and cooking time. The meal comes out of the basin directly; the bowl or bottle the cooking pot serves it into is not needed.
+- **Cutting board** recipes become deploying recipes. The deployer holds the tool the cutting board recipe asks for (a knife, an axe, a pickaxe and so on). By default the tool loses one point of durability per cut and Fortune on it raises the output chances, as on the cutting board.
+- **Cooking pot** recipes become heated mixing recipes with the same ingredients and cooking time. By default the bowl, bottle or other container the cooking pot serves the meal into is one more ingredient, one per meal.
 
-The generated recipes are named `farmerscreate:cutting/<namespace>/<path>` and `farmerscreate:cooking/<namespace>/<path>`. There are no blocks, items or config.
+The generated recipes are named `farmerscreate:cutting/<namespace>/<path>` and `farmerscreate:cooking/<namespace>/<path>`. There are no blocks or items.
+
+## Configuration
+
+`config/farmerscreate.json` is written with the defaults on first launch and read at startup, so a change needs a restart. Each option restores one piece of Farmer's Delight behaviour; set it to `false` for the original FarmersCreate behaviour.
+
+| Key | Default | What it restores |
+| --- | --- | --- |
+| `requireContainer` | `true` | Mixing recipes need the container the cooking pot serves the meal into: the recipe's own container when it names one, otherwise the meal's crafting remainder (a bowl for stews, a glass bottle for drinks). One container per meal; meals served without a container need nothing extra. |
+| `damageTools` | `true` | A deployer cutting with a tool that has durability damages it by one per cut, as the cutting board does. Unbreaking applies, and the tool breaks at zero. Held items without durability are never used up. |
+| `farmersDelightRolls` | `true` | Deployer cutting rolls its outputs with the cutting board's own code, so Fortune on the held tool counts: each level raises every output's chance by Farmer's Delight's `cuttingBoardFortuneBonus` (0.1 by default). With `false`, Create rolls the outputs, the same way item by item but without Fortune. |
+
+JEI and REI keep showing each output's chance either way.
 
 ## Compatibility
 
