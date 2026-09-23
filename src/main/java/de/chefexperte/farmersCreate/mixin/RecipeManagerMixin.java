@@ -7,6 +7,7 @@ import com.zurrtum.create.content.processing.recipe.ProcessingOutput;
 import com.zurrtum.create.content.processing.recipe.SizedIngredient;
 import de.chefexperte.farmersCreate.FarmersCreate;
 import de.chefexperte.farmersCreate.FarmersCreateConfig;
+import de.chefexperte.farmersCreate.GeneratedRecipes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -32,6 +33,7 @@ import vectorwing.farmersdelight.common.registry.ModRecipeTypes;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +47,7 @@ public class RecipeManagerMixin {
     private void farmerscreate$addCreateRecipes(RecipeMap recipeMap, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
         var config = FarmersCreateConfig.get();
         var allRecipes = new ArrayList<>(recipeMap.values());
+        var generatedCutting = new IdentityHashMap<Recipe<?>, CuttingBoardRecipe>();
         // Get Farmer's Delight Cutting Board Recipes
         Collection<RecipeHolder<CuttingBoardRecipe>> cuttingBoardRecipes = recipeMap.byType(ModRecipeTypes.CUTTING.get()).stream().toList();
         FarmersCreate.LOGGER.debug("Found {} Farmer's Delight cutting board recipes", cuttingBoardRecipes.size());
@@ -59,6 +62,7 @@ public class RecipeManagerMixin {
             var key = ResourceKey.create(Registries.RECIPE, newId);
             var recipeHolder = new RecipeHolder<>(key, cuttingRecipe);
             allRecipes.add(recipeHolder);
+            generatedCutting.put(cuttingRecipe, cuttingBoardRecipe);
         }
         // Get Farmer's Delight Cooking Recipes
         Collection<RecipeHolder<CookingPotRecipe>> cookingRecipes = recipeMap.byType(ModRecipeTypes.COOKING.get()).stream().toList();
@@ -82,6 +86,7 @@ public class RecipeManagerMixin {
             allRecipes.add(recipeHolder);
         }
         this.recipes = RecipeMap.create(allRecipes);
+        GeneratedRecipes.setCutting(generatedCutting);
     }
 
     @Unique
