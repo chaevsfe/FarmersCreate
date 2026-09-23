@@ -2,9 +2,9 @@ name: Build
 
 on:
   push:
-    branches: [fabric-26.2]
+    branches: [fabric-26.1.2]
   pull_request:
-    branches: [fabric-26.2]
+    branches: [fabric-26.1.2]
   workflow_dispatch:
 
 jobs:
@@ -29,6 +29,6 @@ jobs:
       - name: Upload jars
         uses: actions/upload-artifact@v4
         with:
-          name: farmerscreate-fabric-26.2
+          name: farmerscreate-fabric-26.1.2
           path: build/libs/*.jar
           if-no-files-found: error
