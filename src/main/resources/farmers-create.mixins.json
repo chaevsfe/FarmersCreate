@@ -4,6 +4,7 @@
   "package": "de.chefexperte.farmersCreate.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "BeltDeployerCallbacksMixin",
     "RecipeManagerMixin"
   ],
   "injectors": {
