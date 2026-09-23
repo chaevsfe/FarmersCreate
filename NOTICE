@@ -1,0 +1,35 @@
+NOTICE
+======
+
+Create Fly: Farmers Create
+
+Based on FarmersCreate by ChefExperte, version 2.0 (tag v2.0, commit fa9ef8bf).
+  Upstream source:  https://github.com/chefexperte/FarmersCreate
+  Upstream project: https://modrinth.com/mod/farmerscreate
+  This port:        https://github.com/chaevsfe/FarmersCreate
+
+Modified by chaevsfe in 2026 to run on Minecraft 26.2 with the Fabric mod
+loader, built against Create Fly by ZurrTum and Farmer's Delight Refabricated.
+
+Nature of the modifications:
+  - built against Create Fly 26.2 and Farmer's Delight Refabricated 26.2
+  - Farmer's Delight recipe results read through the 26.2 item stack templates
+  - the recipe manager mixin applied once, from a single common mixin config
+  - recipe counts logged at debug level instead of printed to standard output
+  - the empty client, data generator and recipe provider classes removed
+
+This is an unofficial port. It is not endorsed by or affiliated with the
+original author. Please report problems with the port to this repository,
+not to the upstream project.
+
+Create Fly and Farmer's Delight Refabricated are separate projects with their
+own licences; none of their code or assets are redistributed here.
+
+Licence
+-------
+The original work is licensed under the GNU Affero General Public License,
+version 3 of the License, or (at your option) any later version. This
+modified version is distributed under the same licence, and its complete
+corresponding source is published at the port repository above. The full
+text accompanies this file as LICENSE.txt, in the repository, the mod jar and
+the sources jar.

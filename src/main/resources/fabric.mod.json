@@ -2,15 +2,20 @@
   "schemaVersion": 1,
   "id": "farmerscreate",
   "version": "${version}",
-  "name": "FarmersCreate",
-  "description": "Compat mod between Farmer's Delight cutting/cooking recipes and Create",
+  "name": "Create Fly: Farmers Create",
+  "description": "FarmersCreate port for Create Fly 26.2. Every Farmer's Delight cutting board recipe also runs on a deployer, and every cooking pot recipe in a heated mixer.",
   "authors": [
-    "ChefExperte"
+    "ChefExperte",
+    "chaevsfe"
+  ],
+  "contributors": [
+    "chaevsfe"
   ],
   "contact": {
-    "email": "aaron+minecraft@chefexperte.de",
-    "sources": "https://github.com/ChefExperte/FarmersCreate",
-    "issues": "https://github.com/ChefExperte/FarmersCreate/issues"
+    "homepage": "https://github.com/chaevsfe/FarmersCreate",
+    "sources": "https://github.com/chaevsfe/FarmersCreate",
+    "issues": "https://github.com/chaevsfe/FarmersCreate/issues",
+    "upstream": "https://modrinth.com/mod/farmerscreate"
   },
   "license": "AGPL-3.0",
   "icon": "assets/farmerscreate/icon.png",

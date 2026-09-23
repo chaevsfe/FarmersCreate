@@ -1,45 +1,59 @@
-# FarmersCreate
+# Create Fly: Farmers Create
 
-![Logo of the mod](media/FarmersCreateLogo.png)
+Runs every Farmer's Delight cutting board recipe on a Create deployer and every cooking pot recipe in a heated mixer.
 
-This is a Fabric mod for Minecraft version 1.21.11 that introduces compatibility between Farmer's Delight and Create. 
+> [!IMPORTANT]
+> **This is an unofficial port.** It is not affiliated with or endorsed by
+> ChefExperte.
+> Please report problems here.
 
-It automatically adds a heated mixing recipe for every Farmer's Delight cooking pot recipe and a deployer recipe 
-(the deployer needs to have a knife mounted) for every cutting board recipe. 
+## What it does
 
-## Supported Farmer's Delight addons
-Since the mod dynamically creates recipes on the fly, it should work with any addon. I will note known 
-incompatibilities here if any are found.
+When recipes load, the mod reads every cutting board and cooking pot recipe on the server, including those added by Farmer's Delight add-ons and data packs, and adds a matching Create recipe for each:
 
-## Example gallery
+- **Cutting board** recipes become deploying recipes. The deployer holds the tool the cutting board recipe asks for (a knife, an axe, a pickaxe and so on), keeps it undamaged, and every output keeps its chance.
+- **Cooking pot** recipes become heated mixing recipes with the same ingredients and cooking time. The meal comes out of the basin directly; the bowl or bottle the cooking pot serves it into is not needed.
 
-![Example of a cutting board recipe](media/cutting_example.png)
+The generated recipes are named `farmerscreate:cutting/<namespace>/<path>` and `farmerscreate:cooking/<namespace>/<path>`. There are no blocks, items or config.
 
-![Example of a mixing recipe](media/cooking_example.png)
+## Compatibility
 
-![Example of an addon recipe](media/addon_example.png)
+| Component | Version |
+| --- | --- |
+| Minecraft | `26.2` |
+| Mod loader | Fabric Loader `0.19.3` or newer |
+| Create Fly | `6.0.9-1` or newer |
+| Farmer's Delight Refabricated | `26.2-3.6.26` or newer |
+| Fabric API | required |
+| Java | `25` or newer |
+| Environments | Client and server |
 
-https://github.com/user-attachments/assets/c35913ea-ed15-473f-b161-f16f1167c4bd
+## Download
 
-## How it works
-This mod uses Mixins to 
-- hook into the recipe registration process to add the recipes.
-- hook into the deployer activation to add rolled results for cutting board recipes.
+- [GitHub releases](https://github.com/chaevsfe/FarmersCreate/releases)
 
-The fork by ZurrTum does not allow multiple results for a deployer recipe, which is why the second mixin is necessary. 
-Also, it does not support CustomingredientImpl, which forces me to hardcode recipes that use it. 
-Two Farmer's Delight recipes do that and are therefore supported. Other recipes that use CustomingredientImpl are 
-not supported and skipped. 
+## Building
 
-## Known issues/limitations
-Since the unofficial Create mod fork for 1.21.11 does not allow multiple results for a deployer recipe, these results 
-are not shown in JEI. However, they still work because of the workaround I am deploying.
+```
+git clone https://github.com/chaevsfe/FarmersCreate
+cd FarmersCreate
+./gradlew build
+```
+
+Requires JDK 25.
 
 ## Credits
-This mod would not have come to life without the 
-[Create mod Fabric port by ZurrTum](https://github.com/ZurrTum/Create-Fly) and the 
-[Farmer's Delight Refabricated mod](https://github.com/MehVahdJukaar/FarmersDelightRefabricated). 
-Furthermore, inspiration is drawn from the 
-[Create: Slice and Dice mod](https://github.com/PssbleTrngle/SliceAndDice/), which sadly was not updated to 1.21.11. 
-And last but not least, the original [Creators of Create](https://github.com/Creators-of-Create/Create) and 
-[Farmer's Delight](https://github.com/vectorwing/FarmersDelight).
+
+- **FarmersCreate** by ChefExperte
+- **Create Fly** by ZurrTum
+- **Farmer's Delight Refabricated** by MehVahdJukaar and contributors
+- **Farmer's Delight** by vectorwing
+- **Create** by the Create Team
+- **Create: Slice and Dice** by PssbleTrngle, which inspired the original mod
+
+## Licence
+
+GNU Affero General Public License v3.0 or later, as upstream. See `LICENSE.txt` and `NOTICE`.
+
+## Reporting Bugs
+When reporting bugs, always include the version number of the mod. If you're reporting a crash, include your client or server log depending on where the crash occurred.
