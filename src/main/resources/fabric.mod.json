@@ -16,22 +16,12 @@
   "icon": "assets/farmerscreate/icon.png",
   "environment": "*",
   "entrypoints": {
-    "fabric-datagen": [
-      "de.chefexperte.farmersCreate.client.FarmersCreateDataGenerator"
-    ],
-    "client": [
-      "de.chefexperte.farmersCreate.client.FarmersCreateClient"
-    ],
     "main": [
       "de.chefexperte.farmersCreate.FarmersCreate"
     ]
   },
   "mixins": [
-    "farmers-create.mixins.json",
-    {
-      "config": "farmers-create.client.mixins.json",
-      "environment": "client"
-    }
+    "farmers-create.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",

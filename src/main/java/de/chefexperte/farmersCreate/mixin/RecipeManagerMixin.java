@@ -1,4 +1,4 @@
-package de.chefexperte.farmersCreate.mixin.client;
+package de.chefexperte.farmersCreate.mixin;
 
 import com.zurrtum.create.content.kinetics.deployer.DeployerApplicationRecipe;
 import com.zurrtum.create.content.kinetics.mixer.MixingRecipe;
@@ -33,7 +33,7 @@ public class RecipeManagerMixin {
     private RecipeMap recipes;
 
     @Inject(at = @At("RETURN"), method = "apply(Lnet/minecraft/world/item/crafting/RecipeMap;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V")
-    public void callApply(RecipeMap recipeMap, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
+    private void farmerscreate$addCreateRecipes(RecipeMap recipeMap, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
         var allRecipes = new ArrayList<>(recipeMap.values());
         // Get Farmer's Delight Cutting Board Recipes
         Collection<RecipeHolder<CuttingBoardRecipe>> cuttingBoardRecipes = recipeMap.byType(ModRecipeTypes.CUTTING.get()).stream().toList();
