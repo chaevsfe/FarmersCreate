@@ -11,5 +11,10 @@ public class FarmersCreate implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        FarmersCreateConfig config = FarmersCreateConfig.get();
+        LOGGER.info("Config: {}={}, {}={}, {}={}",
+                FarmersCreateConfig.REQUIRE_CONTAINER, config.requireContainer,
+                FarmersCreateConfig.DAMAGE_TOOLS, config.damageTools,
+                FarmersCreateConfig.FARMERS_DELIGHT_ROLLS, config.farmersDelightRolls);
     }
 }
