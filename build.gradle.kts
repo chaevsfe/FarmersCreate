@@ -18,7 +18,12 @@ repositories {
     maven("https://api.modrinth.com/maven") {
         content { includeGroup("maven.modrinth") }
     }
+    flatDir {
+        dirs("libs", "../../create-rei/CreateReiViewer-Fly/build/libs")
+    }
 }
+
+val recipeViewer = ":CreateReiViewer:${property("createreiviewer_version")}"
 
 loom {
     mods {
@@ -34,6 +39,8 @@ dependencies {
     implementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_api_version")}")
     implementation("maven.modrinth:create-fly:${property("create_fabric_version")}")
     implementation("maven.modrinth:farmers-delight-refabricated:${property("farmers_delight_version")}")
+
+    include(recipeViewer)
 }
 
 java {

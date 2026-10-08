@@ -28,6 +28,10 @@
   "mixins": [
     "farmers-create.mixins.json"
   ],
+  "suggests": {
+    "createreiviewer": "*",
+    "roughlyenoughitems": "*"
+  },
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
     "fabric-api": "*",
