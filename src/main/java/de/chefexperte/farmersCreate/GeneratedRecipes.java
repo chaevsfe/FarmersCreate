@@ -9,13 +9,17 @@ import java.util.Map;
 
 public final class GeneratedRecipes {
 
-    private static volatile Map<Recipe<?>, CuttingBoardRecipe> cutting = Map.of();
+    private static final Map<Recipe<?>, CuttingBoardRecipe> cutting = Collections.synchronizedMap(new IdentityHashMap<>());
 
     private GeneratedRecipes() {
     }
 
-    public static void setCutting(IdentityHashMap<Recipe<?>, CuttingBoardRecipe> recipes) {
-        cutting = Collections.unmodifiableMap(recipes);
+    public static void clear() {
+        cutting.clear();
+    }
+
+    public static void addCutting(Recipe<?> recipe, CuttingBoardRecipe source) {
+        cutting.put(recipe, source);
     }
 
     public static CuttingBoardRecipe cuttingSource(Recipe<?> recipe) {

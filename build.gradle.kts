@@ -26,6 +26,7 @@ repositories {
 val recipeViewer = ":CreateReiViewer:${property("createreiviewer_version")}"
 
 loom {
+    accessWidenerPath = file("src/main/resources/farmerscreate.accesswidener")
     mods {
         create("farmerscreate") {
             sourceSet(sourceSets.main.get())
@@ -86,6 +87,7 @@ val allowedJarPrefixes = listOf(
 val allowedJarFiles = listOf(
     "fabric.mod.json",
     "farmers-create.mixins.json",
+    "farmerscreate.accesswidener",
     "LICENSE.txt",
     "NOTICE",
 )

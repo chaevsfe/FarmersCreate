@@ -25,6 +25,7 @@
       "de.chefexperte.farmersCreate.FarmersCreate"
     ]
   },
+  "accessWidener": "farmerscreate.accesswidener",
   "mixins": [
     "farmers-create.mixins.json"
   ],

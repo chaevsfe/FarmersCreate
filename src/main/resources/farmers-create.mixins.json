@@ -5,7 +5,7 @@
   "compatibilityLevel": "JAVA_25",
   "mixins": [
     "BeltDeployerCallbacksMixin",
-    "RecipeManagerMixin"
+    "RecipeLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

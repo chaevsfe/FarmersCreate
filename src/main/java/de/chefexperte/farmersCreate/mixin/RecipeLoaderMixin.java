@@ -2,6 +2,7 @@ package de.chefexperte.farmersCreate.mixin;
 
 import com.zurrtum.create.content.kinetics.deployer.DeployerApplicationRecipe;
 import com.zurrtum.create.content.kinetics.mixer.MixingRecipe;
+import com.zurrtum.create.content.processing.RecipeLoader;
 import com.zurrtum.create.content.processing.recipe.HeatCondition;
 import com.zurrtum.create.content.processing.recipe.ProcessingOutput;
 import com.zurrtum.create.content.processing.recipe.SizedIngredient;
@@ -11,82 +12,57 @@ import de.chefexperte.farmersCreate.GeneratedRecipes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.resources.RegistryLoadTask.PendingRegistration;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import vectorwing.farmersdelight.common.block.entity.CookingPotBlockEntity;
 import vectorwing.farmersdelight.common.crafting.CookingPotRecipe;
 import vectorwing.farmersdelight.common.crafting.CuttingBoardRecipe;
-import vectorwing.farmersdelight.common.registry.ModRecipeTypes;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
-@Mixin(RecipeManager.class)
-public class RecipeManagerMixin {
+@Mixin(RecipeLoader.class)
+public class RecipeLoaderMixin {
 
-    @Shadow
-    private RecipeMap recipes;
+    @Inject(method = "createTask", at = @At("HEAD"))
+    private static <V> void farmerscreate$clearGenerated(BiFunction<Identifier, Resource, V> operation, CallbackInfoReturnable<BiFunction<Identifier, Resource, V>> info) {
+        GeneratedRecipes.clear();
+    }
 
-    @Inject(at = @At("RETURN"), method = "apply(Lnet/minecraft/world/item/crafting/RecipeMap;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V")
-    private void farmerscreate$addCreateRecipes(RecipeMap recipeMap, ResourceManager resourceManager, ProfilerFiller profilerFiller, CallbackInfo ci) {
-        var config = FarmersCreateConfig.get();
-        var allRecipes = new ArrayList<>(recipeMap.values());
-        var generatedCutting = new IdentityHashMap<Recipe<?>, CuttingBoardRecipe>();
-        // Get Farmer's Delight Cutting Board Recipes
-        Collection<RecipeHolder<CuttingBoardRecipe>> cuttingBoardRecipes = recipeMap.byType(ModRecipeTypes.CUTTING.get()).stream().toList();
-        FarmersCreate.LOGGER.debug("Found {} Farmer's Delight cutting board recipes", cuttingBoardRecipes.size());
-        for (var cuttingBoardRecipeHolder : cuttingBoardRecipes) {
-            var cuttingBoardRecipe = cuttingBoardRecipeHolder.value();
+    @Inject(method = "onLoadRecipe", at = @At("HEAD"))
+    private static void farmerscreate$addCreateRecipe(PendingRegistration<Recipe<?>> entry, Recipe<?> recipe, CallbackInfo info) {
+        Identifier source = entry.key().identifier();
+        if (recipe instanceof CuttingBoardRecipe cuttingBoardRecipe) {
             var processingOutputs = cuttingBoardRecipe.getRollableResults().stream().map(
                     result -> new ProcessingOutput(result.stack().item(), result.stack().count(), result.stack().components(), result.chance())).toList();
             var cuttingRecipe = new DeployerApplicationRecipe(processingOutputs, true, cuttingBoardRecipe.getInput(), cuttingBoardRecipe.getTool());
-            var namespace = cuttingBoardRecipeHolder.id().identifier().getNamespace();
-            var path = cuttingBoardRecipeHolder.id().identifier().getPath();
-            var newId = Identifier.fromNamespaceAndPath(FarmersCreate.MOD_ID, "cutting/" + namespace + "/" + path);
-            var key = ResourceKey.create(Registries.RECIPE, newId);
-            var recipeHolder = new RecipeHolder<>(key, cuttingRecipe);
-            allRecipes.add(recipeHolder);
-            generatedCutting.put(cuttingRecipe, cuttingBoardRecipe);
-        }
-        // Get Farmer's Delight Cooking Recipes
-        Collection<RecipeHolder<CookingPotRecipe>> cookingRecipes = recipeMap.byType(ModRecipeTypes.COOKING.get()).stream().toList();
-        FarmersCreate.LOGGER.debug("Found {} Farmer's Delight cooking pot recipes", cookingRecipes.size());
-        for (var cookingRecipeHolder : cookingRecipes) {
-            var cookingRecipe = cookingRecipeHolder.value();
+            GeneratedRecipes.addCutting(cuttingRecipe, cuttingBoardRecipe);
+            RecipeLoader.addRecipe(Identifier.fromNamespaceAndPath(FarmersCreate.MOD_ID, "cutting/" + source.getNamespace() + "/" + source.getPath()), cuttingRecipe);
+        } else if (recipe instanceof CookingPotRecipe cookingRecipe) {
             var ingredients = new ArrayList<>(SizedIngredient.of(cookingRecipe.input()));
-            var time = cookingRecipe.getCookTime();
             var result = cookingRecipe.result();
-            if (config.requireContainer) {
+            if (FarmersCreateConfig.get().requireContainer) {
                 farmerscreate$servingContainer(cookingRecipe).ifPresent(
                         container -> ingredients.add(new SizedIngredient(Ingredient.of(HolderSet.direct(container)), result.count())));
             }
             var output = List.of(new ProcessingOutput(result.item(), result.count(), result.components(), 1));
-            var mixingRecipe = new MixingRecipe(time, output, List.of(), HeatCondition.HEATED, new ArrayList<>(), ingredients);
-            var namespace = cookingRecipeHolder.id().identifier().getNamespace();
-            var path = cookingRecipeHolder.id().identifier().getPath();
-            var newId = Identifier.fromNamespaceAndPath(FarmersCreate.MOD_ID, "cooking/" + namespace + "/" + path);
-            var key = ResourceKey.create(Registries.RECIPE, newId);
-            var recipeHolder = new RecipeHolder<>(key, mixingRecipe);
-            allRecipes.add(recipeHolder);
+            var mixingRecipe = new MixingRecipe(cookingRecipe.getCookTime(), output, List.of(), HeatCondition.HEATED, new ArrayList<>(), ingredients);
+            RecipeLoader.addRecipe(Identifier.fromNamespaceAndPath(FarmersCreate.MOD_ID, "cooking/" + source.getNamespace() + "/" + source.getPath()), mixingRecipe);
         }
-        this.recipes = RecipeMap.create(allRecipes);
-        GeneratedRecipes.setCutting(generatedCutting);
     }
 
     @Unique
