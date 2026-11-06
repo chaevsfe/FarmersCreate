@@ -1,21 +1,16 @@
 package de.chefexperte.farmersCreate;
 
+import com.google.common.collect.MapMaker;
 import net.minecraft.world.item.crafting.Recipe;
 import vectorwing.farmersdelight.common.crafting.CuttingBoardRecipe;
 
-import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 public final class GeneratedRecipes {
 
-    private static final Map<Recipe<?>, CuttingBoardRecipe> cutting = Collections.synchronizedMap(new IdentityHashMap<>());
+    private static final Map<Recipe<?>, CuttingBoardRecipe> cutting = new MapMaker().weakKeys().makeMap();
 
     private GeneratedRecipes() {
-    }
-
-    public static void clear() {
-        cutting.clear();
     }
 
     public static void addCutting(Recipe<?> recipe, CuttingBoardRecipe source) {

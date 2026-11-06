@@ -14,7 +14,6 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryLoadTask.PendingRegistration;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
@@ -25,7 +24,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import vectorwing.farmersdelight.common.block.entity.CookingPotBlockEntity;
 import vectorwing.farmersdelight.common.crafting.CookingPotRecipe;
 import vectorwing.farmersdelight.common.crafting.CuttingBoardRecipe;
@@ -33,15 +31,9 @@ import vectorwing.farmersdelight.common.crafting.CuttingBoardRecipe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 @Mixin(RecipeLoader.class)
 public class RecipeLoaderMixin {
-
-    @Inject(method = "createTask", at = @At("HEAD"))
-    private static <V> void farmerscreate$clearGenerated(BiFunction<Identifier, Resource, V> operation, CallbackInfoReturnable<BiFunction<Identifier, Resource, V>> info) {
-        GeneratedRecipes.clear();
-    }
 
     @Inject(method = "onLoadRecipe", at = @At("HEAD"))
     private static void farmerscreate$addCreateRecipe(PendingRegistration<Recipe<?>> entry, Recipe<?> recipe, CallbackInfo info) {
