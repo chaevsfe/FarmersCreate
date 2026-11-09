@@ -17,7 +17,7 @@
     "issues": "https://github.com/chaevsfe/FarmersCreate/issues",
     "upstream": "https://modrinth.com/mod/farmerscreate"
   },
-  "license": "AGPL-3.0",
+  "license": "AGPL-3.0-or-later",
   "icon": "assets/farmerscreate/icon.png",
   "environment": "*",
   "entrypoints": {
